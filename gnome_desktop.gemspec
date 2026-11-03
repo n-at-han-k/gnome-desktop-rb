@@ -49,15 +49,5 @@ Gem::Specification.new do |spec|
   # The C library itself is NOT a gem dependency and cannot be: its typelib
   # belongs to the distribution. See the README.
   spec.add_dependency "gobject-introspection", "~> 4.3"
-
-  # The loader. This is the whole binding: GObjectIntrospection::Loader reads
-  # libgnome-desktop-4's typelib and defines the GnomeDesktop namespace from
-  # it. glib2 comes along as its dependency and is what GLib::Log and the
-  # GObject base classes are.
-  #
-  # libgnome-desktop-4 itself is NOT a gem dependency and cannot be: it is a C
-  # library and its typelib belongs to the distribution. See the README for
-  # the package name.
-
   spec.add_development_dependency "lefthook", "~> 2.2"
 end

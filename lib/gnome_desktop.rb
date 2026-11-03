@@ -19,7 +19,9 @@ require_relative "gnome_desktop/loader"
 #
 # This is how ruby-gnome itself ships gtksourceview5, libsecret and the rest.
 #
-# the same package ships GnomeBG and GnomeRR; GnomeDesktop-3.0 is the GTK3 generation and is not what this binds.
+# What this binds is GnomeDesktop-4.0. The same package ships three more
+# typelibs: GnomeBG-4.0 and GnomeRR-4.0, which both depend on Gdk-4.0 and so
+# belong in gems of their own, and GnomeDesktop-3.0, the GTK3 generation.
 #
 # The typelib has to be findable at require time, which means the library's
 # `girepository-1.0` directory on `GI_TYPELIB_PATH` or in the system default.

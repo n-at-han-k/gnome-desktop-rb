@@ -1,0 +1,48 @@
+GnomeDesktop for Ruby
+Copyright 2026 General Intelligence Systems
+
+This product includes software developed by the GNOME Project.
+
+--------------------------------------------------------------------------------
+libgnome-desktop-4 (the C library)
+--------------------------------------------------------------------------------
+
+This gem defines the GnomeDesktop namespace from libgnome-desktop-4's GObject
+Introspection typelib at require time. It contains no libgnome-desktop source,
+vendors nothing, and links nothing at build time: the typelib is read at
+runtime from wherever the host installed it, and the dynamic loader resolves
+the library behind it.
+
+  https://gitlab.gnome.org/GNOME/gnome-desktop
+  Copyright 1999-2026 the GNOME Project and contributors
+  Licensed under the GNU Lesser General Public License, version 2.0 or later
+
+Dynamic linking against an LGPL library is the case the LGPL is written for,
+and it imposes no licence on this work. What it asks is that a recipient be
+able to substitute their own build of that library, which reading its typelib
+at runtime allows even more directly than linking does. The Apache-2.0 terms in
+LICENSE therefore cover this gem's own source, and the LGPL covers the library
+it calls into.
+
+--------------------------------------------------------------------------------
+ruby-gnome
+--------------------------------------------------------------------------------
+
+GObjectIntrospection::Loader, which is what this gem is, comes from ruby-gnome.
+The loader here follows the shape of ruby-gnome's own (gtksourceview5 and
+libsecret in particular) and is a runtime dependency rather than a copy.
+
+  https://github.com/ruby-gnome/ruby-gnome
+  Copyright 2002-2026 Ruby-GNOME Project Team
+  Licensed under the GNU Lesser General Public License, version 2.1 or later
+
+--------------------------------------------------------------------------------
+On the data these lookups read
+--------------------------------------------------------------------------------
+
+The answers come from data files on the host rather than from this gem:
+xkeyboard-config supplies the keyboard layout registry, hwdata the
+monitor-vendor table, iso-codes and the system locale archive the country and
+language names, and gsettings-desktop-schemas the GSettings schema XkbInfo
+opens. A machine without them returns empty lists and nils, which is not a
+fault in this binding.

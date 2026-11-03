@@ -39,7 +39,7 @@
       path = ./.;
       type = "path";
     };
-    version = "0.1.1";
+    version = "1.0.0";
   };
   gobject-introspection = {
     dependencies = ["glib2"];

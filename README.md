@@ -97,6 +97,59 @@ no GType, so GI has nothing to marshal it from and reports the signature as
 constants are defined and the class exists; constructing it needs a fix
 upstream in libgnome-desktop's annotations, not here.
 
+## Using it from a flake
+
+The gem needs `GnomeDesktop-4.0.typelib` and everything that typelib declares, resolved
+transitively by the loader at `require` time. A missing one surfaces as
+`Typelib file for namespace 'X' not found`, one at a time, so the whole chain
+is listed here rather than discovered by repeated failure:
+
+- `pkgs.gnome-desktop` — its typelib, which is where `GnomeDesktop-4.0.typelib` lives
+- `pkgs.gsettings-desktop-schemas` — its typelib
+- `pkgs.gdk-pixbuf` — GdkPixbuf-2.0
+- `pkgs.glib` — GLib-2.0, GObject-2.0 and Gio-2.0, which nearly every GNOME typelib declares
+
+Note the `.out`: a package's default output is often `bin`, which carries no
+typelibs. `makeSearchPath` takes the first output, so it has to be asked for
+`out` explicitly — this is the single most common way to get a search path that
+looks right and finds nothing.
+
+```nix
+{
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+  outputs = { nixpkgs, ... }:
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+
+      typelibPath = pkgs.lib.makeSearchPath "lib/girepository-1.0"
+        (map (drv: drv.out or drv) [ pkgs.gnome-desktop pkgs.gsettings-desktop-schemas pkgs.gdk-pixbuf pkgs.glib ]);
+    in
+    {
+      devShells.${system}.default = pkgs.mkShell {
+        packages = [ pkgs.ruby_3_4 pkgs.bundler ] ++ [ pkgs.gnome-desktop pkgs.gsettings-desktop-schemas pkgs.gdk-pixbuf pkgs.glib ];
+
+        shellHook = ''
+          export GI_TYPELIB_PATH="${typelibPath}''${GI_TYPELIB_PATH:+:$GI_TYPELIB_PATH}"
+        '';
+      };
+    };
+}
+```
+
+Everything must come from **one** nixpkgs. A typelib built against a different
+glib than the `gobject-introspection` gem registers GIO twice in the process
+and fails with `cannot register existing type 'GTlsCertificate'`.
+
+If you are packaging an application rather than entering a shell, the same
+`typelibPath` goes on the wrapper:
+
+```nix
+makeWrapper ${ruby}/bin/ruby $out/bin/my-app \
+  --set GI_TYPELIB_PATH "${typelibPath}"
+```
+
 ## Development
 
 ```sh

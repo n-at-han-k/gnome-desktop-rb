@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    gnome_desktop (0.1.1)
+    gnome_desktop (1.0.0)
       gem_kit (~> 0.2)
       gobject-introspection (~> 4.3)
 

@@ -4,5 +4,5 @@
 # Copyright, 2026, by General Intelligence Systems.
 
 module GnomeDesktop
-  VERSION = "0.1.1"
+  VERSION = "1.0.0"
 end
